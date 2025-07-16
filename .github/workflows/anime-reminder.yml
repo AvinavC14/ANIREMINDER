@@ -1,0 +1,30 @@
+name: Anime Reminder Cron
+
+on:
+  schedule:
+    - cron: '30 4 * * *'  # 10:00 AM IST (convert to UTC)
+  workflow_dispatch:  # allows manual run
+
+jobs:
+  send-anime-reminder:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run reminder script
+        run: node backend.js
+        env:
+          TWILIO_SID: ${{ secrets.TWILIO_SID }}
+          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
+          TWILIO_NUMBER: ${{ secrets.TWILIO_NUMBER }}
+          MY_NUMBER: ${{ secrets.MY_NUMBER }}
