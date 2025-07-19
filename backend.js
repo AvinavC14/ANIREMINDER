@@ -1,9 +1,9 @@
 const axios = require('axios');
 const twilio = require('twilio');
 require('dotenv').config({path:'.env.local'})
-
+const fs=require('fs');
 //the anime list
-const animes=["Dan Da Dan Season 2","Grand Blue Season 2","Gachiakuta","The Fragrant Flower Blooms with Dignity"];
+const animes=JSON.parse(fs.readFileSync('animes.json','utf-8'))
 animes.forEach((anime)=>{
     getAnimeInfo(anime);
 }
