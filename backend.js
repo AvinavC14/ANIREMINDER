@@ -14,7 +14,6 @@ async function getAnimeInfo(title) {
     query {
       Media(search: "${title}", type: ANIME) {
         title {
-          romaji
           english
         }
         status
@@ -31,9 +30,9 @@ async function getAnimeInfo(title) {
     { query },
     { headers: { 'Content-Type': 'application/json' } }
   );
-
   const animeName=res.data.data.Media.title.english ;
-
+  const epNo=res.data.data.Media.nextAiringEpisode.episode;
+      
   if(!res.data.data.Media.nextAiringEpisode){
     console.log("no airing episode for anime " +animeName)
     return;
@@ -46,17 +45,17 @@ console.log("airingdate : "+airingDate)
 console.log("todayDate : "+todayDate)
 
   if(todayDate===airingDate){
-    sendSMS(animeName)
+    sendSMS(animeName, epNo);
   }
 }
 
 //sending sms to me 
 const client = new twilio(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN);
 
-function sendSMS(animeName) {
+function sendSMS(animeName, epNo) {
   client.messages
     .create({
-      body: `🎉 New episode of ${animeName} airs today!`,
+      body: `🎉 Episode ${epNo} of ${animeName} airs today!`,
       from: process.env.TWILIO_NUMBER,
       to: process.env.MY_NUMBER
     })
