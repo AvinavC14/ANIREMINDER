@@ -40,22 +40,28 @@ async function getAnimeInfo(title) {
  const airingAt=res.data.data.Media.nextAiringEpisode.airingAt*1000 //converts seconds to ms
 const airingDate = new Date(airingAt).toDateString(); // Converts to "Tue Jul 16 2025"
 const todayDate = new Date().toDateString();
+const time=new Date(airingAt).toLocaleTimeString('en-US',{
+  timeZone:'Asia/Kolkata',
+  hour:'numeric',
+  minute:'2-digit',
+  hour12:true
+})
 console.log("Anime "+animeName)
 console.log("airingdate : "+airingDate)
 console.log("todayDate : "+todayDate)
 
   if(todayDate===airingDate){
-    sendSMS(animeName, epNo);
+    sendSMS(animeName, epNo,time);
   }
 }
 
 //sending sms to me 
 const client = new twilio(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN);
 
-function sendSMS(animeName, epNo) {
+function sendSMS(animeName, epNo,time) {
   client.messages
     .create({
-      body: `🎉 Episode ${epNo} of ${animeName} airs today!`,
+      body: `🎉 Episode ${epNo} of ${animeName} airs today at ${time}!`,
       from: process.env.TWILIO_NUMBER,
       to: process.env.MY_NUMBER
     })
