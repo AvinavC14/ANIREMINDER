@@ -30,14 +30,15 @@ async function getAnimeInfo(title) {
     { query },
     { headers: { 'Content-Type': 'application/json' } }
   );
-  const animeName=res.data.data.Media.title.english ;
-  const epNo=res.data.data.Media.nextAiringEpisode.episode;
+ 
       
   if(!res.data.data.Media.nextAiringEpisode){
-    console.log("no airing episode for anime " +animeName)
+    console.log("no airing episode for anime " + title);
     return;
   }
- const airingAt=res.data.data.Media.nextAiringEpisode.airingAt*1000 //converts seconds to ms
+const animeName=res.data.data.Media.title.english ;
+const epNo=res.data.data.Media.nextAiringEpisode.episode;
+const airingAt=res.data.data.Media.nextAiringEpisode.airingAt*1000 //converts seconds to ms
 const airingDate = new Date(airingAt).toDateString(); // Converts to "Tue Jul 16 2025"
 const todayDate = new Date().toDateString();
 const time=new Date(airingAt).toLocaleTimeString('en-US',{
