@@ -24,7 +24,5 @@ jobs:
       - name: Run reminder script
         run: node backend.js
         env:
-          TWILIO_SID: ${{ secrets.TWILIO_SID }}
-          TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
-          TWILIO_NUMBER: ${{ secrets.TWILIO_NUMBER }}
-          MY_NUMBER: ${{ secrets.MY_NUMBER }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
