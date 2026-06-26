@@ -1,7 +1,7 @@
 const axios = require('axios');
-const twilio = require('twilio');
 require('dotenv').config({path:'.env.local'})
 const fs=require('fs');
+const { truncate } = require('fs/promises');
 //the anime list
 const animes=JSON.parse(fs.readFileSync('animes.json','utf-8'))
 animes.forEach((anime)=>{
@@ -32,10 +32,10 @@ async function getAnimeInfo(title) {
   );
  
       
-  if(!res.data.data.Media.nextAiringEpisode){
-    console.log("no airing episode for anime " + title);
-    return;
-  }
+  // if(!res.data.data.Media.nextAiringEpisode){
+  //   console.log("no airing episode for anime " + title);
+  //   return;
+  // }
 const animeName=res.data.data.Media.title.english ;
 const epNo=res.data.data.Media.nextAiringEpisode.episode;
 const airingAt=res.data.data.Media.nextAiringEpisode.airingAt*1000 //converts seconds to ms
@@ -51,23 +51,26 @@ console.log("Anime "+animeName)
 console.log("airingdate : "+airingDate)
 console.log("todayDate : "+todayDate)
 
-  if(todayDate===airingDate){
-    sendSMS(animeName, epNo,time);
+  if(true){
+    sendTelegram(animeName, epNo,time);
   }
 }
 
-//sending sms to me 
-const client = new twilio(process.env.TWILIO_SID,process.env.TWILIO_AUTH_TOKEN);
+//sending message to me 
+async function sendTelegram(animeName, epNo, time) {
+  try {
+    await axios.post(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`,
+      {
+        chat_id: process.env.TELEGRAM_CHAT_ID,
+        text: `🎉 Episode ${epNo} of ${animeName} airs today at ${time}!`
+      }
+    );
 
-function sendSMS(animeName, epNo,time) {
-  client.messages
-    .create({
-      body: `🎉 Episode ${epNo} of ${animeName} airs today at ${time}!`,
-      from: process.env.TWILIO_NUMBER,
-      to: process.env.MY_NUMBER
-    })
-    .then(message => console.log('SMS sent, ID:', message.sid))
-    .catch(err => console.error('Failed to send SMS:', err));
+    console.log("Telegram message sent!");
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  }
 }
 
 
