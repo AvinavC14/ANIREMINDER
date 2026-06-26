@@ -32,10 +32,10 @@ async function getAnimeInfo(title) {
   );
  
       
-  // if(!res.data.data.Media.nextAiringEpisode){
-  //   console.log("no airing episode for anime " + title);
-  //   return;
-  // }
+  if(!res.data.data.Media.nextAiringEpisode){
+    console.log("no airing episode for anime " + title);
+    return;
+  }
 const animeName=res.data.data.Media.title.english ;
 const epNo=res.data.data.Media.nextAiringEpisode.episode;
 const airingAt=res.data.data.Media.nextAiringEpisode.airingAt*1000 //converts seconds to ms
@@ -51,7 +51,7 @@ console.log("Anime "+animeName)
 console.log("airingdate : "+airingDate)
 console.log("todayDate : "+todayDate)
 
-  if(true){
+  if(todayDate===airingDate){
     sendTelegram(animeName, epNo,time);
   }
 }
